@@ -1,0 +1,127 @@
+// Author: Arcee Juan
+// C Project
+
+// A Program to Solve for User Defined System of Linear Equations, Showing its Matrix Form and Reducing them to Row Echelon
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+int main()
+{
+    printf("\n    ---------------------------------------------------------------------\n");
+    printf("\n        This is a Program to solve User Defined System of Equations, \n");
+    printf("        Transform it to its Matrix Form, and Reduce it to Row Echelon\n\n");
+    printf("    ---------------------------------------------------------------------\n");
+
+    int NumEq; // Variable for the number of equations needed to solve.
+    int numberRead=0;
+    
+    /*Asks for the matrix size, through asking the number of unknowns
+    they want to solve. Limited to only positive integers greater than 1. */
+    do
+    {
+
+        printf("\nEnter No. of Unknowns:  ");
+        numberRead = scanf("%d", &NumEq);
+        if (NumEq < 1 )
+        {
+            printf("Invalid input, enter only positive integers.\n");
+        }
+        if (numberRead !=1 || NumEq>508)        //The program can only solve up to 508 unknowns
+        {
+            printf("Invalid Input. Please try again\n");
+            scanf("%[^\n]");
+        }
+
+    } while (NumEq <1 || numberRead !=1 || NumEq>508);
+
+    //Variable Declaration
+    //The Goal is for the matrix to have all diagonal coefficients equal to 1
+
+    double matrix[NumEq][NumEq + 1]; //First Array is the number of equations, second array is for number of elements
+                                    // Note that if there are n number of unknowns, the matrix has n+1 elements
+                                    // Example: 2 Unknowns; Matrix will have a 2x3 size
+    double modifier, storage;        //modifier is to multiply the diagonal coefficient to the reciprocal to have a coefficient equal to 1
+    int modulus;                     //modulus is to make all non-diagonal coefficients equal to zero
+
+    //Ask the user to input all the coefficients of the matrix
+    system("cls");
+    printf("Number of Unknowns: %d", NumEq);
+    printf("\n\n[Format: (A1)x+(A2)y+... = b]\n\n");        //The user should follow this format
+
+    for(int i = 0; i < NumEq; i++)
+    {
+        printf("\nEnter coefficients for equation %d\n", i+1);
+
+        for(int j = 0; j <= NumEq; j++)
+        {
+            if (j < NumEq)
+                {
+                    printf("A%d: ", j+1);
+                    scanf("%lf", &matrix[i][j]);
+                }
+            else
+                {
+                    printf("b%d: ", i+1);
+                    scanf("%lf", &matrix[i][j]);
+                }
+        }
+    }
+
+
+    /*Prints out the initial matrix before calculation*/
+    printf("\nThe following matrix is formed: \n");
+    for(int i = 0; i < NumEq; i++)
+    {
+        for(int j = 0; j <= NumEq; j++)
+            printf("%0.2f   ", matrix[i][j]);
+        printf("\n");
+    }
+
+    /*Solves for the matrix*/
+    for(int i = 0; i < NumEq; i++)
+    {
+        /*Normalizes the current equation being manipulated*/
+        for(int j = 0; j <= NumEq; j++)
+        {
+            if (i == j)
+                modifier = 1 / matrix[i][i];
+            matrix[i][j] = matrix[i][j] * modifier;
+        }
+
+        /*Subtracts from all equationbelow the current equation.*/
+        modulus = i + 1;
+        for (int k = modulus; k < NumEq; k++)
+         {
+            storage = matrix[k][i];
+            for (int l = 0; l <= NumEq; l++)
+                matrix[k][l] = matrix[k][l] -(storage * matrix[i][l]);
+        }
+
+    }
+
+    /*Subracts from all NumEq above the current equation.*/
+    for(int i = 0; i < NumEq ; i++)
+    {
+        modulus = i + 1;
+        for(int j = modulus; j < NumEq; j++)
+            {
+                storage = matrix[i][j];
+                for (int k = 0; k <= NumEq; k++)
+                    matrix[i][k] = matrix[i][k] -(storage * matrix[j][k]);
+            }
+    }
+
+    /*Prints the matrix in reduced row echelon form.*/
+    printf("\nThe matrix in reduced row echelon form: \n");
+    for(int i = 0; i < NumEq; i++)
+    {
+        for(int j = 0; j <= NumEq; j++)
+            printf("%0.2f   ", matrix[i][j]);
+        printf("\n");
+    }
+    printf("\n");
+    system("PAUSE");
+    return 0;
+}
