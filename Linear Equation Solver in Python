@@ -1,0 +1,111 @@
+import os
+from decimal import Decimal
+
+
+# clear function to clear screen
+def clear():
+    # check if system is windows
+    if os.name == 'nt':
+        os.system('cls')
+
+    # for mac and linux
+    # here, os.name is 'posix'
+    else:
+        os.system('clear')
+
+
+print("\n ---------------------------------------------------------------------")
+print("\n This is a Program to solve User Defined System of Equations,")
+print(" Transform it to its Matrix Form, and Reduce it to Row Echelon\n")
+print(" ---------------------------------------------------------------------")
+
+# Variable for the number of equations needed to solve.
+NumEq = int(input("\nEnter No. of Unknowns: "))
+numberRead = 1
+
+# Asks for the matrix size, through asking the number of unknowns
+# they want to solve. Limited to only positive integers greater than 1.
+
+if NumEq < 1:
+    print("Invalid input, enter only positive integers.")
+
+# The program can only solve up to 508 unknowns
+if numberRead != 1 or NumEq > 508:
+    print("Invalid Input. Please try again")
+
+while NumEq < 1 or numberRead != 1 or NumEq > 508:
+    NumEq = int(input("\nEnter No. of Unknowns: "))
+    numberRead = 1
+    if NumEq < 1:
+        print("Invalid input, enter only positive integers.")
+
+    if numberRead != 1 or NumEq > 508:
+        print("Invalid Input. Please try again")
+
+# Variable Declaration
+# The Goal is for the matrix to have all diagonal coefficients equal to 1
+
+# Here in python list is used in place of matrix.
+# So data is appended whenever necessary
+matrix = []
+modifier = 0.0
+storage = 0.0
+modulus = 0
+
+clear()
+
+print("Number of Unknowns:", NumEq)
+print("\n[Format: (A1)x+(A2)y+... = b]\n")
+for i in range(NumEq):
+    matrix.append([])
+    print("\nEnter coefficients for equation", i + 1)
+    for j in range(NumEq + 1):
+        if j < NumEq:
+            print("A", j + 1, end=":", sep="")
+            matrix[i].append(float(input()))
+        else:
+            print("b", i + 1, end=":", sep="")
+            matrix[i].append(float(input()))
+
+# Prints out the initial matrix before calculation
+print("\nThe following matrix is formed: ")
+for i in range(NumEq):
+    for j in range(NumEq + 1):
+        print("{:.2f}".format(matrix[i][j]), end=" ")
+    print()
+
+# Solves for the matrix
+for i in range(NumEq):
+    # Normalizes the current equation being manipulated
+    for j in range(NumEq + 1):
+        if i == j:
+            if matrix[i][i] == 0.0:
+                modifier = float(Decimal('Infinity'))
+            else:
+                modifier = 1 / matrix[i][i]
+            matrix[i][j] = matrix[i][j] * modifier
+
+    # Subtracts from all equation below the current equation.
+    modulus = i + 1
+    for k in range(modulus, NumEq):
+        storage = matrix[k][i]
+
+        for m in range(NumEq + 1):
+            matrix[k][m] = matrix[k][m] - (storage * matrix[i][m])
+
+# Subtracts from all NumEq above the current equation.*/
+for i in range(NumEq):
+    modulus = i + 1
+    for j in range(modulus, NumEq):
+        storage = matrix[i][j]
+        for k in range(NumEq + 1):
+            matrix[i][k] = matrix[i][k] - (storage * matrix[j][k])
+
+# Prints the matrix in reduced row echelon form.
+print("\nThe matrix in reduced row echelon form: ")
+for i in range(NumEq):
+    for j in range(NumEq + 1):
+        print("{:.2f}".format(matrix[i][j]), end=" ")
+    print()
+print()
+os.system("PAUSE")
